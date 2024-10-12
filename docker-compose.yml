@@ -1,0 +1,38 @@
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+    ports:
+      - "${PMA_PORT}:80"
+
+  lms:
+    image: php:7.4-apache
+    volumes:
+      - ./lms_data:/var/www/html
+    ports:
+      - "${LMS_PORT}:80"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "${MAILHOG_WEB_PORT}:8025"
+      - "${MAILHOG_SMTP_PORT}:1025"
+
+volumes:
+  db_data:
